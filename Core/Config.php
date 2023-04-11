@@ -15,16 +15,18 @@ class Config{
         ],
         'website' => [
             'name' => 'Medical Appointment System',
-            'url' => 'http://localhost/medical_as/',
+            'patient-url' => 'http://localhost/medical_as/patient',
+            'doctor-url' => 'http://localhost/medical_as/doctor',
+            'admin-url' => 'http://localhost/medical_as/admin',
         ],
         'mail' => [
             'host' => 'smtp.gmail.com',
-            'username' => 'primeangel76@gmail.com',
-            'password' => 'vzqwmkbsclwgazll',
+            'username' => 'anggi.nins76@gmail.com',
+            'password' => 'emltmiytalbqspua',
             'port' => 587,
             'encryption' => 'tls',
             'from' => 'Medical Appointment System',
-            'from_email' => 'primeangel76@gmail.com',
+            'from_email' => 'anggi.nins76@gmail.com',
         ],
     ];
     

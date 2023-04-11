@@ -4,40 +4,40 @@ require('../AutoLoad.php');
 
 if(!isset($_GET['page'])){$_GET['page'] = 'dashboard';}
 
-if(!Session::exists('admin_id')){Redirect::to('auth.php?page=login');}
+if(!Session::exists('doctor_id')){Redirect::to('auth.php?page=login');}
 
 if(Input::get('page') == 'logout'){
-    Session::delete('admin_id');
+    Session::delete('doctor_id');
     Session::put('success', 'Logout successful');
     Redirect::to('auth.php?page=login');
 }
 
 $user = new User();
 
-$admin = $user->find([
+$doctor = $user->find([
     'conditions' => 'user_id = ?',
-    'bind' => [Session::get('admin_id')]
+    'bind' => [Session::get('doctor_id')]
 ]);
 
-// get all doctors
-$doctors = $user->find([
-    'conditions' => 'user_roles = ?',
-    'bind' => ['doctor']
+$get_doctor = new Doctor();
+$doc = $get_doctor->find([
+    'conditions' => 'doctor_id = ?',
+    'bind' => [Session::get('doctor_id')]
 ]);
 
-// get all patients
-$patients = $user->find([
-    'conditions' => 'user_roles = ?',
-    'bind' => ['patient']
+// get all patients for the doctor
+$patient = new Patientes();
+$patients = $patient->find([
+    'conditions' => 'doctor_id = ?',
+    'bind' => [Session::get('doctor_id')]
 ]);
 
-// get all appointments
+// get all appointments for the doctor
 $appointment = new Appointment();
-$appointments = $appointment->find();
-
-// get all session logs
-$session = new Sessions();
-$sessions = $session->find();
+$appointments = $appointment->find([
+    'conditions' => 'doctor_id = ?',
+    'bind' => [Session::get('doctor_id')]
+]);
 
 $title = ucfirst($_GET['page']);
 
@@ -73,7 +73,7 @@ $title = ucfirst($_GET['page']);
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.php?page=dashboard" class="logo d-flex align-items-center">
                 <span class="d-none d-lg-block">
-                    <span>Admin</span>
+                    <span>Doctor</span>
                 </span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -137,17 +137,17 @@ $title = ucfirst($_GET['page']);
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle"></i>
                         <span class="d-none d-md-block dropdown-toggle ps-2 text-uppercase">
-                            <?= $admin[0]->user_name ?>
+                            <?= $doctor[0]->user_name ?>
                         </span>
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>
-                                <?= $admin[0]->user_first_name ?> <?= $admin[0]->user_last_name ?>
+                                <?= $doctor[0]->user_first_name ?> <?= $doctor[0]->user_last_name ?>
                             </h6>
                             <span>
-                                <?= $admin[0]->user_email ?>
+                                <?= $doctor[0]->user_email ?>
                             </span>
                         </li>
                         <li>
@@ -200,22 +200,6 @@ $title = ucfirst($_GET['page']);
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="?page=doctors">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Doctors</span>
-                </a>
-            </li>
-
-            <li class="nav-heading">History</li>
-
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="?page=appointments">
-                    <i class="bi bi-calendar-check"></i>
-                    <span>Appointments</span>
-                </a>
-            </li>
-
         </ul>
 
     </aside>
@@ -254,7 +238,7 @@ $title = ucfirst($_GET['page']);
 
     <footer id="footer" class="footer">
         <div class="copyright">
-            &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
+            &copy; Copyright <strong><span>Nicedoctor</span></strong>. All Rights Reserved
         </div>
         <div class="credits">
             Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>

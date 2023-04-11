@@ -4,7 +4,7 @@
 
         <div class="pt-4 pb-2">
             <h5 class="card-title text-center pb-0 fs-4">
-                <i class="bi bi-person-gear"></i> Admin Portal
+                <i class="bi bi-person-check"></i> Doctor Portal
             </h5>
             <p class="text-center small">Enter your username & password to login</p>
         </div>
@@ -25,11 +25,12 @@
             <div class="col-12">
                 <label for="yourPassword" class="form-label">Password</label>
                 <input type="password" name="user_password" class="form-control" id="yourPassword" required>
+                <p class="small mb-0"><a href="?page=verify-email">Forgot password?</a></p>
                 <div class="invalid-feedback">Please enter your password!</div>
             </div>
 
             <div class="col-12">
-                <button class="btn btn-primary w-100" type="submit">Login</button>
+                <button class="btn btn-primary w-100" type="submit" name="login">Login</button>
             </div>
         </form>
 

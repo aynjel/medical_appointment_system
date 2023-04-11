@@ -1,6 +1,8 @@
 <?php
 
-if(!isset($_GET['id'])){header('Location: ?page=patients');exit;}
+if(!isset($_GET['id']) || empty($_GET['id'])){
+  echo '<script>window.location.href = "?page=patients";</script>';
+}
 
 $id = $_GET['id'];
 

@@ -1,5 +1,9 @@
 <?php
 
+// set default timezone in philippines (manila)
+define('TIMEZONE', 'Asia/Manila');
+date_default_timezone_set(TIMEZONE);
+
 session_start();
 
 require('../Core/PHPMailerAutoload.php');

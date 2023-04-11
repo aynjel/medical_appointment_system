@@ -18,12 +18,14 @@ class User extends Model{
 
     public function DoctorLogin($username, $password){
         $doctor = $this->find([
-            'conditions' => 'user_name = ? AND user_password = ? AND user_roles = ?',
-            'bind' => [$username, $password, 'doctor']
+            'conditions' => 'user_name = ? AND user_roles = ?',
+            'bind' => [$username, 'doctor']
         ]);
 
         if($doctor){
-            return $doctor[0]->user_id;
+            if(password_verify($password, $doctor[0]->user_password)){
+                return $doctor[0]->user_id;
+            }
         }
     }
 
@@ -48,7 +50,7 @@ class User extends Model{
             Session::flash('error', 'Username or Email already exists');
             return false;
         }else{
-            return $this->create([
+            $this->create([
                 'user_first_name' => Input::get('first_name'),
                 'user_last_name' => Input::get('last_name'),
                 'user_name' => Input::get('username'),
@@ -58,6 +60,8 @@ class User extends Model{
                 'user_gender' => Input::get('gender'),
                 'user_roles' => $roles,
             ]);
+
+            return $this->db->lastInsertId();
         }
     }
 

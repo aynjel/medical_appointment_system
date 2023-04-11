@@ -8,7 +8,6 @@ if(Input::exists()){
   $res = $user->createUser('patient', $random_password);
 
   if($res){
-
     $patient = new Patientes();
 
     $patient->create([
@@ -26,6 +25,8 @@ if(Input::exists()){
     <p>Username: <strong>'.Input::get('username').'</strong></p>
     <p>Password: <strong>'.$random_password.'</strong></p>
     <p>OTP: <strong>'.$otp_code.'</strong></p>
+    <p>Doctor: <strong>'.$doctor[0]->user_first_name.' '.$doctor[0]->user_last_name.'</strong></p>
+    <p>Click <a href="'.Config::get('website/patient-url').'">here</a> to login.</p>
     <p>Thank you.</p>';
     
     $user->send_email(Input::get('email'), $subject, $body, $otp_code);
@@ -72,21 +73,20 @@ if(Input::exists()){
                     <tr>
                       <th scope="col">Name</th>
                       <th scope="col">Email</th>
-                      <th scope="col">Appointment/s</th>
-                      <th scope="col">Status</th>
                       <th></th>
                     </tr>
                   </thead>
                   <tbody>
                     <?php foreach($patients as $p): ?>
-                    <?php $appointments = $appointment->find_by_patient($p->user_id); ?>
+                      <?php $u = $user->find([
+                      'conditions' => 'user_id = ?',
+                      'bind' => [$p->patient_id
+                    ]])[0]; ?>
                     <tr>
-                      <td><?= $p->user_first_name . ' ' . $p->user_last_name ?></td>
-                      <td><?= $p->user_email ?></td>
-                      <td><?= count($appointments) ?></td>
-                      <td><?= $p->user_is_verify ?></td>
+                      <td><?= $u->user_first_name . ' ' . $u->user_last_name ?></td>
+                      <td><?= $u->user_email ?></td>
                       <td>
-                        <a href="?page=patient&id=<?= $p->user_id ?>" class="btn btn-sm btn-primary">
+                        <a href="?page=patient&id=<?= $u->user_id ?>" class="btn btn-sm btn-primary">
                           <i class="bi bi-eye"></i>
                         </a>
                       </td>
@@ -131,15 +131,6 @@ if(Input::exists()){
             </div>
           </div>
           <div class="mb-3">
-            <label for="doctor_id" class="form-label">Doctor</label>
-            <select name="doctor_id" class="form-control form-select">
-              <option selected hidden disabled value="">Select Doctor</option>
-              <?php foreach($doctors as $d): ?>
-              <option value="<?= $d->user_id ?>"><?= $d->user_first_name . ' ' . $d->user_last_name ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-          <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" required>
           </div>
@@ -160,6 +151,7 @@ if(Input::exists()){
               </select>
             </div>
           </div>
+          <input type="hidden" name="doctor_id" value="<?= Session::get('doctor_id') ?>">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

@@ -166,8 +166,8 @@ if(Input::exists()){
           <div class="row mb-3">
             <div class="col-md-6">
               <div class="mb-3">
-                <label for="consultancy_fee" class="form-label">Consultancy Fee (optional)</label>
-                <input type="number" class="form-control" id="consultancy_fee" name="consultancy_fee">
+                <label for="consultancy_fee" class="form-label">Consultancy Fee</label>
+                <input type="number" class="form-control" id="consultancy_fee" name="consultancy_fee" required>
               </div>
             </div>
             <div class="col-md-6">

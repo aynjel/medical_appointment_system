@@ -66,7 +66,7 @@ if(Input::exists()){
               </div>
               <?php else : ?>
               <div class="table-responsive">
-                <table class="table table-borderless">
+                <table class="table table-borderless datatable">
                   <thead>
                     <tr>
                       <th scope="col">Name</th>
@@ -141,10 +141,38 @@ if(Input::exists()){
           <div class="row mb-3">
             <div class="col-md-6">
               <label for="specialization" class="form-label">Specialization</label>
-              <input type="text" class="form-control" id="specialization" name="specialization" required>
+              <select class="form-select" id="specialization" name="specialization" required>
+                <option selected hidden disabled value="">Select Specialization</option>
+                <option value="Allergist">Allergist</option>
+                <option value="Anesthesiologist">Anesthesiologist</option>
+                <option value="Cardiologist">Cardiologist</option>
+                <option value="Dermatologist">Dermatologist</option>
+                <option value="Endocrinologist">Endocrinologist</option>
+                <option value="Gastroenterologist">Gastroenterologist</option>
+                <option value="Hematologist">Hematologist</option>
+                <option value="Infectious Disease Specialist">Infectious Disease Specialist</option>
+                <option value="Nephrologist">Nephrologist</option>
+                <option value="Neurologist">Neurologist</option>
+                <option value="Nuclear Medicine Specialist">Nuclear Medicine Specialist</option>
+                <option value="Obstetrician">Obstetrician</option>
+                <option value="Oncologist">Oncologist</option>
+                <option value="Ophthalmologist">Ophthalmologist</option>
+                <option value="Orthopedic Surgeon">Orthopedic Surgeon</option>
+                <option value="Otolaryngologist">Otolaryngologist</option>
+                <option value="Pathologist">Pathologist</option>
+                <option value="Pediatrician">Pediatrician</option>
+                <option value="Physiatrist">Physiatrist</option>
+                <option value="Plastic Surgeon">Plastic Surgeon</option>
+                <option value="Psychiatrist">Psychiatrist</option>
+                <option value="Pulmonologist">Pulmonologist</option>
+                <option value="Radiologist">Radiologist</option>
+                <option value="Rheumatologist">Rheumatologist</option>
+                <option value="Surgeon">Surgeon</option>
+                <option value="Urologist">Urologist</option>
+              </select>
             </div>
             <div class="col-md-6">
-              <label for="clinic" class="form-label">Clinic</label>
+              <label for="clinic" class="form-label">Clinic Address</label>
               <input type="text" class="form-control" id="clinic" name="clinic" required>
             </div>
           </div>
@@ -164,6 +192,7 @@ if(Input::exists()){
             <div class="col-md-6">
               <label for="gender" class="form-label">Gender</label>
               <select name="gender" class="form-control form-select">
+                <option selected hidden disabled value="">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
               </select>
