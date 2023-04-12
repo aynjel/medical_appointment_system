@@ -24,19 +24,21 @@ class User extends Model{
 
         if($doctor){
             if(password_verify($password, $doctor[0]->user_password)){
-                return $doctor[0]->user_id;
+                return $doctor[0];
             }
         }
     }
 
     public function PatientLogin($username, $password){
         $patient = $this->find([
-            'conditions' => 'user_name = ? AND user_password = ? AND user_roles = ?',
-            'bind' => [$username, $password, 'patient']
+            'conditions' => 'user_name = ? AND user_roles = ?',
+            'bind' => [$username, 'patient']
         ]);
 
         if($patient){
-            return $patient[0]->user_id;
+            if(password_verify($password, $patient[0]->user_password)){
+                return $patient[0];
+            }
         }
     }
 

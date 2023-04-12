@@ -4,39 +4,40 @@ require('../AutoLoad.php');
 
 if(!isset($_GET['page'])){$_GET['page'] = 'dashboard';}
 
-if(!Session::exists('doctor_id')){Redirect::to('auth.php?page=login');}
+if(!Session::exists('patient_id')){Redirect::to('auth.php?page=login');}
 
 if(Input::get('page') == 'logout'){
-    Session::delete('doctor_id');
+    Session::delete('patient_id');
     Session::put('success', 'Logout successful');
     Redirect::to('auth.php?page=login');
 }
 
 $user = new User();
 
-$doctor = $user->find([
+$patient = $user->find([
     'conditions' => 'user_id = ?',
-    'bind' => [Session::get('doctor_id')]
+    'bind' => [Session::get('patient_id')]
 ]);
 
-$get_doctor = new Doctor();
-$doc = $get_doctor->find([
-    'conditions' => 'doctor_id = ?',
-    'bind' => [Session::get('doctor_id')]
+// get all doctors
+$doctor = new User();
+$doctors = $doctor->find([
+    'conditions' => 'user_roles = ?',
+    'bind' => ['doctor']
 ]);
 
-// get all patients for the doctor
-$patient = new Patientes();
-$patients = $patient->find([
-    'conditions' => 'doctor_id = ?',
-    'bind' => [Session::get('doctor_id')]
+// get all medical history for the patient
+$medical = new Medical();
+$medicals = $medical->find([
+    'conditions' => 'patient_id = ?',
+    'bind' => [Session::get('patient_id')]
 ]);
 
-// get all appointments for the doctor
+// get all appointments for the patient
 $appointment = new Appointment();
 $appointments = $appointment->find([
-    'conditions' => 'doctor_id = ?',
-    'bind' => [Session::get('doctor_id')]
+    'conditions' => 'patient_id = ?',
+    'bind' => [Session::get('patient_id')]
 ]);
 
 $title = ucfirst($_GET['page']);
@@ -73,7 +74,7 @@ $title = ucfirst($_GET['page']);
         <div class="d-flex align-items-center justify-content-between">
             <a href="index.php?page=dashboard" class="logo d-flex align-items-center">
                 <span class="d-none d-lg-block">
-                    <span>Doctor</span>
+                    <span>Patient</span>
                 </span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
@@ -137,17 +138,17 @@ $title = ucfirst($_GET['page']);
                     <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
                         <i class="bi bi-person-circle"></i>
                         <span class="d-none d-md-block dropdown-toggle ps-2 text-uppercase">
-                            <?= $doctor[0]->user_name ?>
+                            <?= $patient[0]->user_name ?>
                         </span>
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
                         <li class="dropdown-header">
                             <h6>
-                                <?= $doctor[0]->user_first_name ?> <?= $doctor[0]->user_last_name ?>
+                                <?= $patient[0]->user_first_name ?> <?= $patient[0]->user_last_name ?>
                             </h6>
                             <span>
-                                <?= $doctor[0]->user_email ?>
+                                <?= $patient[0]->user_email ?>
                             </span>
                         </li>
                         <li>
@@ -194,9 +195,18 @@ $title = ucfirst($_GET['page']);
             <li class="nav-heading">Manage</li>
 
             <li class="nav-item">
-                <a class="nav-link collapsed" href="?page=patients">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Patients</span>
+                <a class="nav-link collapsed" href="?page=appointments">
+                    <i class="bi bi-calendar-check"></i>
+                    <span>Appointments</span>
+                </a>
+            </li>
+
+            <li class="nav-heading">History</li>
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="?page=medicals">
+                    <i class="bi bi-file-medical"></i>
+                    <span>Medical</span>
                 </a>
             </li>
 
@@ -238,7 +248,7 @@ $title = ucfirst($_GET['page']);
 
     <footer id="footer" class="footer">
         <div class="copyright">
-            &copy; Copyright <strong><span>Nicedoctor</span></strong>. All Rights Reserved
+            &copy; Copyright <strong><span>NicePatient</span></strong>. All Rights Reserved
         </div>
         <div class="credits">
             Designed by <a href="https://bootstrapmade.com/">BootstrapMade</a>

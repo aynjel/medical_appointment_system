@@ -1,3 +1,10 @@
+<?php
+
+if(!Session::exists('verify_otp') || !Session::exists('otp_doctor_id')){
+    Redirect::to('auth.php?page=login');
+}
+?>
+
 <div class="card mb-3">
 
     <div class="card-body">
@@ -6,7 +13,7 @@
             <h5 class="card-title text-center pb-0 fs-4">
                 <i class="bi bi-check-circle"></i> Verify OTP
             </h5>
-            <p class="text-center small">Enter the OTP sent to your email</p>
+            <p class="text-center small">Enter the OTP sent to your email to verify your account</p>
         </div>
 
         <?= Session::display_session_msg(); ?>
@@ -25,7 +32,7 @@
             </div>
 
             <div class="col-12">
-                <button class="btn btn-primary w-100" type="submit" name="verify-otp">Verify</button>
+                <button class="btn btn-primary w-100" type="submit" name="verify-otp-login">Verify</button>
             </div>
 
             <!-- go back to login page -->

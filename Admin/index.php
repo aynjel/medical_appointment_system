@@ -245,7 +245,7 @@ $title = ucfirst($_GET['page']);
         if(file_exists("{$page}.php")){
             require("{$page}.php");
         }else{
-            Redirect::to('index.php?page=dashboard');
+            echo "<script>window.location.href = 'index.php?page=dashboard'</script>";
         }
 
         ?>

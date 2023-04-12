@@ -5,11 +5,11 @@ if(Input::exists()){
 
   $res = $appointment->create([
     'doctor_id' => Input::get('doctor_id'),
-    'patient_id' => Input::get('patient_id'),
+    'patient_id' => Session::get('patient_id'),
     'appointment_specialization' => Input::get('specialization'),
     'appointment_consultancy_fee' => Input::get('consultancy_fee'),
     'appointment_datetime' => Input::get('datetime'),
-    'appointment_status' => 'Decided'
+    'appointment_status' => 'Pending'
   ]);
 
   if($res){
@@ -38,7 +38,7 @@ if(Input::exists()){
                 Appointment/s List <span class="badge bg-primary text-light fw-bold"><?= count($appointments) ?></span>
                 <div class="float-end">
                   <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAppointmentModal">
-                    <i class="bi bi-plus"></i> Add Appointment
+                    <i class="bi bi-plus"></i> Book Appointment
                   </button>
                 </div>
               </h5>
@@ -133,7 +133,7 @@ if(Input::exists()){
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">
-          <i class="bi bi-plus"></i> Add Appointment
+          <i class="bi bi-plus"></i> Book Appointment
         </h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
@@ -145,15 +145,6 @@ if(Input::exists()){
             <select name="doctor_id" class="form-control form-select">
               <?php foreach($doctors as $d): ?>
               <option value="<?= $d->user_id ?>"><?= $d->user_first_name . ' ' . $d->user_last_name ?></option>
-              <?php endforeach; ?>
-            </select>
-          </div>
-
-          <div class="mb-3">
-            <label for="user_id" class="form-label">Patient</label>
-            <select name="patient_id" class="form-control form-select">
-              <?php foreach($patients as $p): ?>
-              <option value="<?= $p->user_id ?>"><?= $p->user_first_name . ' ' . $p->user_last_name ?></option>
               <?php endforeach; ?>
             </select>
           </div>

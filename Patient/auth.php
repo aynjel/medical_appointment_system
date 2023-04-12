@@ -4,7 +4,7 @@ require('../AutoLoad.php');
 
 if(!isset($_GET['page'])){$_GET['page'] = 'login';}
 
-if(Session::exists('doctor_id')){
+if(Session::exists('patient_id')){
     Redirect::to('index.php?page=dashboard');
 }
 
@@ -26,21 +26,21 @@ if(isset($_POST['login'])){
 
     if($validation->passed()){
         $user = new User();
-        $login = $user->DoctorLogin(Input::get('user_name'), Input::get('user_password'));
+        $login = $user->PatientLogin(Input::get('user_name'), Input::get('user_password'));
 
         if($login){
 
             if($login->user_is_verify === 'pending'){
                 echo '<script>alert("Your account is pending. Please contact admin")</script>';
                 Session::put('verify_otp', true);
-                Session::put('otp_doctor_id', $login->user_id);
+                Session::put('otp_patient_id', $login->user_id);
                 Redirect::to('auth.php?page=verify-otp-login');
             }elseif($login->user_is_verify === 'rejected'){
                 echo '<script>alert("Your account is rejected. Please contact admin")</script>';
                 Redirect::to('auth.php?page=login');
             }elseif($login->user_is_verify === 'verified'){
                 echo '<script>alert("Login success")</script>';
-                Session::put('doctor_id', $login->user_id);
+                Session::put('patient_id', $login->user_id);
                 Redirect::to('auth.php?page=dashboard');
             }else{
                 echo '<script>alert("Login failed")</script>';
@@ -143,28 +143,26 @@ if(isset($_POST['verify-otp-login'])){
         $otp = new OTP();
         $o = $otp->find([
             'conditions' => 'user_id = ? AND otp_code = ?',
-            'bind' => [Session::get('otp_doctor_id'), Input::get('otp_code')],
+            'bind' => [Session::get('otp_patient_id'), Input::get('otp_code')],
         ]);
 
         if($o){
             // update user_is_verify
             $user = new User();
-            $user->update(Session::get('otp_doctor_id'), [
+            $user->update(Session::get('otp_patient_id'), [
                 'user_is_verify' => 'verified',
             ]);
             echo '<script>alert("OTP code verified")</script>';
             // delete otp
             $otp->delete($o[0]->otp_id);
             Session::delete('verify_otp');
-            Session::delete('otp_doctor_id');
+            Session::delete('otp_patient_id');
             echo '<script>window.location.href = "?page=login"</script>';
         }else{
             echo '<script>alert("Invalid OTP code")</script>';
-            echo '<script>window.location.href = "?page=verify-otp-login"</script>';
         }
     }else{
         echo '<script>alert("'.$validation->errors()[0].'")</script>';
-        echo '<script>window.location.href = "?page=verify-otp-login"</script>';
     }
 }
 

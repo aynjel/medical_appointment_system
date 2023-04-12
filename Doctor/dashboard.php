@@ -1,3 +1,77 @@
+<?php
+
+if(isset($_POST['cancel_appointment'])){
+  $validate = new Validate();
+  $validation = $validate->check($_POST, [
+      'appointment_id' => [
+          'display' => 'Appointment ID',
+          'required' => true,
+      ],
+  ]);
+
+  if($validation->passed()){
+      $appointment = new Appointment();
+      $a = $appointment->find([
+          'conditions' => 'appointment_id = ?',
+          'bind' => [Input::get('appointment_id')],
+      ])[0];
+
+      if($a){
+          if($a->appointment_status === 'Pending'){
+              $appointment->update($a->appointment_id, [
+                  'appointment_status' => 'Cancelled',
+              ]);
+
+              echo '<script>alert("Appointment cancelled")</script>';
+              echo '<script>window.location.href = "?page=appointments"</script>';
+          }else{
+              echo '<script>alert("Appointment already cancelled")</script>';
+          }
+      }else{
+          echo '<script>alert("Appointment not found")</script>';
+      }
+  }else{
+      echo '<script>alert("'.$validation->errors()[0].'")</script>';
+  }
+}
+
+if(isset($_POST['decide_appointment'])){
+  $validate = new Validate();
+  $validation = $validate->check($_POST, [
+      'appointment_id' => [
+          'display' => 'Appointment ID',
+          'required' => true,
+      ]
+  ]);
+
+  if($validation->passed()){
+      $appointment = new Appointment();
+      $a = $appointment->find([
+          'conditions' => 'appointment_id = ?',
+          'bind' => [Input::get('appointment_id')],
+      ])[0];
+
+      if($a){
+          if($a->appointment_status === 'Pending'){
+              $appointment->update($a->appointment_id, [
+                  'appointment_status' => 'Decided'
+              ]);
+
+              echo '<script>alert("Appointment status updated")</script>';
+              echo '<script>window.location.href = "?page=appointments"</script>';
+          }else{
+              echo '<script>alert("Appointment already cancelled")</script>';
+          }
+      }else{
+          echo '<script>alert("Appointment not found")</script>';
+      }
+  }else{
+      echo '<script>alert("'.$validation->errors()[0].'")</script>';
+  }
+}
+
+?>
+
 <section class="section dashboard">
   <div class="row">
 
@@ -123,17 +197,21 @@
                                 </a>
                               </li>
                               <?php if($a->appointment_status == 'Pending'): ?>
-                                <li>
-                                  <a class="dropdown-item" href="index.php?page=appointment-details&appointment_id=<?= $a->appointment_id ?>&action=decide" onclick="return confirm('Are you sure you want to decide this appointment?');">
+                                <form method="POST">
+                                  <input type="hidden" name="appointment_id" value="<?= $a->appointment_id ?>">
+                                  <button type="submit" class="dropdown-item" name="decide_appointment" onclick="return confirm('Are you sure you want to decide this appointment?');">
                                     <i class="bi bi-check"></i>
                                     Decide
-                                  </a>
-                                </li>
+                                  </button>
+                                </form>
                                 <li>
-                                  <a class="dropdown-item" href="index.php?page=appointment-details&appointment_id=<?= $a->appointment_id ?>&action=cancel" onclick="return confirm('Are you sure you want to cancel this appointment?');">
+                                <form method="POST">
+                                  <input type="hidden" name="appointment_id" value="<?= $a->appointment_id ?>">
+                                  <button type="submit" class="dropdown-item" name="cancel_appointment" onclick="return confirm('Are you sure you want to cancel this appointment?');">
                                     <i class="bi bi-x"></i>
                                     Cancel
-                                  </a>
+                                  </button>
+                                </form>
                                 </li>
                               <?php endif; ?>
                             </ul>

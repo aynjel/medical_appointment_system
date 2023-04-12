@@ -1,5 +1,6 @@
 <?php
 
+if(!isset($_GET['id'])) {header('Location: index.php?page=dashboard');}
 
 $id = $_GET['id'];
 
@@ -7,15 +8,7 @@ $appointment = new Appointment();
 $a = $appointment->find([
   'conditions' => 'appointment_id = ?',
   'bind' => [$id]
-  ])[0];
-
-if(!isset($_GET['id']) || !$a){header('Location: index.php?page=dashboard');}
-  
-if(isset($_POST['delete_appointment'])){
-  $appointment->delete(Input::get('appointment_id'));
-  echo '<script>alert("Appointment deleted")</script>';
-  echo '<script>window.location.href = "index.php?page=dashboard"</script>';
-}
+])[0];
 
 ?>
 <section class="section dashboard">
@@ -30,21 +23,12 @@ if(isset($_POST['delete_appointment'])){
 
             <div class="card-body pb-0">
               <h5 class="card-title">
-                Appointment Details
-                <span class="text-dark badge"><?= $a->appointment_status ?></span>
+                <?= $a->appointment_specialization ?>
                 <div class="float-end">
-                <form method="POST">
-                  <input type="hidden" name="appointment_id" value="<?= $a->appointment_id ?>">
-                  <button type="submit" class="btn btn-danger" name="delete_appointment" title="Delete Appointment" onclick="return confirm('Are you sure you want to delete this appointment?')">
-                    <i class="bi bi-trash"></i>
-                </form>
+                  <button class="btn btn-info text-light" data-bs-toggle="modal" data-bs-target="#editAppointmentModal">
+                    <i class="bi bi-pencil"></i> Edit
                 </div>
               </h5>
-
-              <div class="mb-3">
-                <label for="appointment_specialization" class="form-label">Specialization</label>
-                <textarea name="appointment_specialization" class="form-control" disabled><?= $a->appointment_specialization ?></textarea>
-              </div>
               
               <div class="row">
                 <div class="col-md-6">
@@ -56,10 +40,7 @@ if(isset($_POST['delete_appointment'])){
                 <div class="col-md-6">
                   <div class="mb-3">
                     <label for="patient_id" class="form-label">Patient</label>
-                    <?php $p = $user->find([
-                      'conditions' => 'user_id = ?',
-                      'bind' => [$a->patient_id]
-                    ])[0]; ?>
+                    <?php $patient = new Patientes(); $p = $patient->find(['conditions' => 'user_id = ?', 'bind' => [$a->patient_id]])[0]; ?>
                     <input type="text" name="patient_id" class="form-control" value="<?= $p->user_first_name . ' ' . $p->user_last_name ?>" disabled>
                   </div>
                 </div>
