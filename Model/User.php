@@ -24,6 +24,11 @@ class User extends Model{
 
         if($doctor){
             if(password_verify($password, $doctor[0]->user_password)){
+                $sessions = new Sessions();
+                $sessions->create([
+                    'user_id' => $doctor[0]->user_id,
+                    'session_status' => 'login'
+                ]);
                 return $doctor[0];
             }
         }
@@ -37,6 +42,11 @@ class User extends Model{
 
         if($patient){
             if(password_verify($password, $patient[0]->user_password)){
+                $sessions = new Sessions();
+                $sessions->create([
+                    'user_id' => $patient[0]->user_id,
+                    'session_status' => 'login',
+                ]);
                 return $patient[0];
             }
         }
@@ -135,13 +145,14 @@ class User extends Model{
             $mail->Subject = $subject;
             $mail->Body    = $body;
 
-            $mail->send();
+            if($mail->send()){
+                return true;
+            }else{
+                return false;
+            }
         } catch (Exception $e) {
             Session::flash('error', 'Message could not be sent. Mailer Error: '.$mail->ErrorInfo);
         }
-
-        return true;
-
     }
 
 }

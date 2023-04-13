@@ -88,20 +88,18 @@
                         <th scope="col">Name</th>
                         <th scope="col">Email</th>
                         <th scope="col">Role</th>
-                        <th scope="col">Login Time</th>
-                        <th scope="col">Logout Time</th>
+                        <th scope="col">Date and Time</th>
                         <th scope="col">Status</th>
                       </tr>
                     </thead>
                     <tbody>
                       <?php foreach($sessions as $log): ?>
-                        <?php $name = $user->find($log->user_id); ?>
+                        <?php $ses_user = $user->findBy('user_id', $log->user_id)[0] ?>
                       <tr>
-                        <td><?= $name->user_first_name . ' ' . $name->user_last_name ?></td>
-                        <td><?= $name->user_email ?></td>
-                        <td><?= $name->user_role ?></td>
-                        <td><?= $log->session_login_time ?></td>
-                        <td><?= $log->session_logout_time ?></td>
+                        <td><?= $ses_user->user_first_name . ' ' . $ses_user->user_last_name ?></td>
+                        <td><?= $ses_user->user_email ?></td>
+                        <td><?= $ses_user->user_roles ?></td>
+                        <td><?= $log->created_at ?></td>
                         <td><?= $log->session_status ?></td>
                       </tr>
                       <?php endforeach; ?>

@@ -11,7 +11,7 @@
 
         <?= Session::display_session_msg(); ?>
 
-        <form class="row g-3 needs-validation" novalidate method="POST" action="?page=login">
+        <form class="row g-3 needs-validation" novalidate method="POST">
 
             <div class="col-12">
                 <label for="yourOTP" class="form-label">

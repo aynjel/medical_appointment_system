@@ -10,9 +10,9 @@ if(Session::exists('patient_id')){
 
 $title = ucfirst($_GET['page']);
 
-$validate = new Validate();
 
 if(isset($_POST['login'])){
+    $validate = new Validate();
     $validation = $validate->check($_POST, [
         'user_name' => [
             'display' => 'Username',
@@ -53,7 +53,42 @@ if(isset($_POST['login'])){
     }
 }
 
+if(isset($_POST['register'])){
+    $user = new User();
+    $res = $user->createUser('patient', Input::get('password'));
+    
+    if($res){
+        $patient = new Patientes();
+        $patient->create([
+            'patient_id' => $res,
+            'doctor_id' => Input::get('doctor_id'),
+        ]);
+        $otp = new OTP();
+        $otp_code = rand(100000, 999999);
+        $otp->create([
+            'user_id' => $res,
+            'otp_code' => $otp_code,
+        ]);
+
+        $subject = 'Account Verification';
+        $body = 'Your OTP code is: ' . $otp_code;
+
+        $s = $user->send_mail(Input::get('email'), $subject, $body);
+
+        if($s){
+            echo '<script>alert("Registration success. Please check your email for verification code")</script>';
+            Session::put('verify_otp', true);
+            Session::put('otp_patient_id', $res);
+            Redirect::to('auth.php?page=verify-otp');
+            Redirect::to('auth.php?page=verify-otp');
+        }else{
+            echo '<script>alert("Registration failed")</script>';
+        }
+    }
+}
+
 if(isset($_POST['verify-email'])){
+    $validate = new Validate();
     $validation = $validate->check($_POST, [
         'user_email' => [
             'display' => 'Email',
@@ -98,6 +133,7 @@ if(isset($_POST['verify-email'])){
 }
 
 if(isset($_POST['verify-otp'])){
+    $validate = new Validate();
     $validation = $validate->check($_POST, [
         'otp_code' => [
             'display' => 'OTP Code',
@@ -130,6 +166,7 @@ if(isset($_POST['verify-otp'])){
 }
 
 if(isset($_POST['verify-otp-login'])){
+    $validate = new Validate();
     $validation = $validate->check($_POST, [
         'otp_code' => [
             'display' => 'OTP Code',
@@ -167,6 +204,7 @@ if(isset($_POST['verify-otp-login'])){
 }
 
 if(isset($_POST['change-password'])){
+    $validate = new Validate();
     $validation = $validate->check($_POST, [
         'user_password' => [
             'display' => 'Password',

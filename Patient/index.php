@@ -7,9 +7,16 @@ if(!isset($_GET['page'])){$_GET['page'] = 'dashboard';}
 if(!Session::exists('patient_id')){Redirect::to('auth.php?page=login');}
 
 if(Input::get('page') == 'logout'){
-    Session::delete('patient_id');
-    Session::put('success', 'Logout successful');
-    Redirect::to('auth.php?page=login');
+    $sessions = new Sessions();
+    $res = $sessions->create([
+        'user_id' => Session::get('patient_id'),
+        'session_status' => 'logout',
+    ]);
+    if($res){
+        Session::delete('patient_id');
+        Session::put('success', 'Logout successful');
+        Redirect::to('auth.php?page=login');
+    }
 }
 
 $user = new User();

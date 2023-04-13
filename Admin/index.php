@@ -37,7 +37,9 @@ $appointments = $appointment->find();
 
 // get all session logs
 $session = new Sessions();
-$sessions = $session->find();
+$sessions = $session->find([
+    'order' => 'session_id DESC'
+]);
 
 $title = ucfirst($_GET['page']);
 
